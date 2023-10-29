@@ -20,7 +20,7 @@ void insert(T arr[],int& len,T e,int p)
     {
         arr[i]=arr[i-1];
     }
-    arr[p]=v;
+    arr[p]=e;
     len++;
 }
 
@@ -30,7 +30,7 @@ template <typename T>
 T remove(T arr[],int& len,int p)
 {
    T ret=arr[p];
-   for(int i=p;p<len,p++)
+   for(int i=p;p<len;p++)
    {
     arr[p]=arr[p+1];
    }
@@ -80,7 +80,7 @@ void sort(T arr[],int len,int cmpTT(T,T))
         orderedInsert<T>(aux,len,arr[i],cmpTT);
         i++;
     }
-    for(int j=0;j<len,j++) //copio el array ordenado al original
+    for(int j=0;j<len;j++) //copio el array ordenado al original
     {
         arr[j]=aux[j];
     }

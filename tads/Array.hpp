@@ -34,7 +34,7 @@ int arrayAdd(Array<T>& a,T t)
       T* b = new T[2*a.cap];
       for(int i=0; i<a.cap; i++)
       {
-         b[i]=a.arr[i]
+         b[i]=a.arr[i];
       }
       delete a.arr;
       a.arr=b;
@@ -64,7 +64,7 @@ void arrayInsert(Array<T>& a,T t,int p)
       T* b = new T[2*a.cap];
       for(int i=0; i<a.cap; i++)
       {
-         b[i]=a.arr[i]
+         b[i]=a.arr[i];
       }
       delete a.arr;
       a.arr=b;
@@ -106,7 +106,7 @@ int arrayOrderedInsert(Array<T>& a,T t,int cmpTT(T,T))
       T* b = new T[2*a.cap];
       for(int i=0; i<a.cap; i++)
       {
-         b[i]=a.arr[i]
+         b[i]=a.arr[i];
       }
       delete a.arr;
       a.arr=b;
@@ -123,7 +123,7 @@ T* arrayDiscover(Array<T>& a,T t,int cmpTT(T,T))
    {
       pos = arrayAdd<T>(a,t);
    }
-   return ret;
+   return arrayGet(a,pos);
 }
 
 

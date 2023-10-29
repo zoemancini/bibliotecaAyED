@@ -28,7 +28,7 @@ Map<K,V> map()
 template<typename K,typename V>
 V* mapGet(Map<K,V> m,K k)
 {
-   int i=0
+   int i=0;
    int pos=-1;
    while(i<m.keys.len && pos==-1)
    {
@@ -141,7 +141,7 @@ K mapNextKey(Map<K,V>& m)
 template<typename K,typename V>
 V* mapNextValue(Map<K,V>& m) //mutualmente excluyente???????
 {
-   V ret = *(arrayGet(m.values,m.j));
+   V* ret = arrayGet(m.values,m.j);
    m.j++;
    return ret;
 }
@@ -195,11 +195,11 @@ void mapSortByValues(Map<K,V>& m,int cmpVV(V,V))
 
    mapReset<K,V>(m);
    K key = mapNextKey<K,V>(m);
-   arrayAdd<K>(aux,key)
+   arrayAdd<K>(aux,key);
    while(mapHasNext<K,V>(m))//ordeno las keys en un array auxiliar
    {
       key = mapNextKey<K,V>(m);
-      V value = mapGet<K,V>(m,key);
+      V value = *mapGet<K,V>(m,key);
 
       int i = 0;
       while(cmpVV(value, arrayGet<K>(aux,i))<0)
@@ -212,12 +212,12 @@ void mapSortByValues(Map<K,V>& m,int cmpVV(V,V))
    Array<V> valuesOrdenados = array<V>();
    for (int i=0;i<arraySize<K>(m.keys);i++)
    {
-      K keyOrdered = arrayGet<K>(keysOrdenadas,i);
-      V valueOrdered = mapGet<K,V>(m,keyOrdered);
+      K keyOrdered = *arrayGet<K>(aux,i);
+      V valueOrdered = *mapGet<K,V>(m,keyOrdered);
       arraySet<V>(valuesOrdenados,i,valueOrdered);
    }
 
-   m.keys=keysOrdenadas;
+   m.keys=aux;
    m.values=valuesOrdenados;
 }
 
