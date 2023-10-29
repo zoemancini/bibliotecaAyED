@@ -193,16 +193,17 @@ void mapSortByValues(Map<K,V>& m,int cmpVV(V,V))
 {
    Array<K> aux = array<K>(); //array para copiar las keys y ordenarlas con criterio de values
 
-   mapReset<K,V>(m);
-   K key = mapNextKey<K,V>(m);
-   arrayAdd<K>(aux,key);
+   mapReset<K,V>(m); //reseteo el map para poder iterar
+   K key = mapNextKey<K,V>(m); //tomo la primer key
+   arrayAdd<K>(aux,key); //agrego la primer key al array auxiliar
    while(mapHasNext<K,V>(m))//ordeno las keys en un array auxiliar
    {
-      key = mapNextKey<K,V>(m);
-      V value = *mapGet<K,V>(m,key);
+      key = mapNextKey<K,V>(m);//tomo la siguiente key
+      V value = *mapGet<K,V>(m,key); //tomo el value correspondiente a la sig key
 
       int i = 0;
-      while(cmpVV(value, arrayGet<K>(aux,i))<0)
+      while(cmpVV(value, *mapGet<K,V>(m,*arrayGet<K>(aux,i)))<0)/*mientras el value de la siguiente key sea menor,
+         sigo iterando*/
       {
          i++;
       }
