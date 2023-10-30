@@ -1,4 +1,3 @@
-
 #ifndef _TMAP_TAD_
 #define _TMAP_TAD_
 
@@ -12,14 +11,16 @@ struct Map
 {
    Array<K> keys;
    Array<V> values;
-   int i;
-   int j;
+   int i; //apunta al current del array keys
+   int j; //apunta al current del array values
 };
 
 template<typename K,typename V>
 Map<K,V> map()
 {
    Map<K,V> m;
+   m.keys = arrayCreate<K>();
+   m.values = arrayCreate<V>();
    m.i=0;
    m.j=0;
    return m;
@@ -28,44 +29,36 @@ Map<K,V> map()
 template<typename K,typename V>
 V* mapGet(Map<K,V> m,K k)
 {
-   int i=0;
-   int pos=-1;
-   while(i<m.keys.len && pos==-1)
+   V* ret = NULL;
+
+   for(int i=0;i<arraySize<K>(m.keys);i++)
    {
-      if(k==*(arrayGet<K>(m.keys,i)))
+      if(k==*arrayGet<K>(m.keys,i))
       {
-         pos=i;
+         ret = arrayGet<V>(m.values,i);
+         i=arraySize<K>(m.keys);
       }
-      i++;
    }
-   return pos>0?arrayGet(m.values,pos):NULL;
+   return ret;
 }
 
 template<typename K,typename V>
 V* mapPut(Map<K,V>& m,K k,V v)
 {
-   int i=0;
-   int pos=-1;
-   while(i<m.keys.len && pos==-1)
+   V* ret = mapGet<K,V>(m,k);
+   if (ret == NULL)
    {
-      if(k==*arrayGet<K>(m.keys,i))
-      {
-         pos = i;
-      }
-      i++;
-   }
-   if(pos<0)
-   {
-      arrayAdd<K>(m.keys,k);
-      pos = arrayAdd<V>(m.values,v);
+      arrayAdd<V>(m.values,v);
+      int pos = arrayAdd<K>(m.keys,k);
+      ret = arrayGet<V>(m.values,pos);
       m.i++;
       m.j++;
    }
    else
    {
-      arraySet<V>(m.values,pos,v);
+      *ret=v;
    }
-   return arrayGet<V>(m.values,pos);
+   return ret;
 }
 
 template<typename K,typename V>
@@ -123,7 +116,7 @@ template<typename K,typename V>
 bool mapHasNext(Map<K,V> m)
 {
    bool ret = false;
-   if(mapSize<K,V>(m)<m.i)
+   if(mapSize<K,V>(m)>m.i && mapSize<K,V>(m)>m.j)
    {
       ret=true;
    }
@@ -172,11 +165,11 @@ V* mapDiscover(Map<K,V>& m,K k,V v)
 template<typename K,typename V>
 void mapSortByKeys(Map<K,V>& m,int cmpKK(K,K))
 {
-   Array<K> keysOrdenadas = array<K>(); //array para copiar las keys y ordenarlas
+   Array<K> keysOrdenadas = arrayCreate<K>(); //array para copiar las keys y ordenarlas
    keysOrdenadas=m.keys;
    arraySort<K>(keysOrdenadas,cmpKK);
 
-   Array<V> valuesOrdenados = array<V>();
+   Array<V> valuesOrdenados = arrayCreate<V>();
    for (int i=0;i<arraySize<K>(m.keys);i++)
    {
       K keyOrdered = arrayGet<K>(keysOrdenadas,i);
@@ -191,7 +184,7 @@ void mapSortByKeys(Map<K,V>& m,int cmpKK(K,K))
 template<typename K,typename V>
 void mapSortByValues(Map<K,V>& m,int cmpVV(V,V))
 {
-   Array<K> aux = array<K>(); //array para copiar las keys y ordenarlas con criterio de values
+   Array<K> aux = arrayCreate<K>(); //array para copiar las keys y ordenarlas con criterio de values
 
    mapReset<K,V>(m); //reseteo el map para poder iterar
    K key = mapNextKey<K,V>(m); //tomo la primer key
@@ -202,15 +195,15 @@ void mapSortByValues(Map<K,V>& m,int cmpVV(V,V))
       V value = *mapGet<K,V>(m,key); //tomo el value correspondiente a la sig key
 
       int i = 0;
-      while(cmpVV(value, *mapGet<K,V>(m,*arrayGet<K>(aux,i)))<0)/*mientras el value de la siguiente key sea menor,
-         sigo iterando*/
+      while(i<arraySize<K>(aux) && cmpVV(value, *mapGet<K,V>(m,*arrayGet<K>(aux,i))) <= 0)/*mientras el value de la
+       siguiente key sea menor, sigo iterando*/
       {
          i++;
       }
       arrayInsert<K>(aux,i,key);
    }
 
-   Array<V> valuesOrdenados = array<V>();
+   Array<V> valuesOrdenados = arrayCreate<V>();
    for (int i=0;i<arraySize<K>(m.keys);i++)
    {
       K keyOrdered = *arrayGet<K>(aux,i);

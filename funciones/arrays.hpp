@@ -9,7 +9,8 @@ int add(T arr[],int& len,T e)
 {
     arr[len]=e;
     len++;
-   return len-1;
+    int copylen = len;
+    return copylen-1;
 }
 
 //Inserta el elemento e en la posicion p del arr. Desplaza los elementos ubicados a partir de p+1 e incrementa la longitud len.

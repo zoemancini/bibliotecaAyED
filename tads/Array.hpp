@@ -16,7 +16,7 @@ struct Array
 };
 
 template<typename T>
-Array<T> array()
+Array<T> arrayCreate()
 {
    Array<T> ret;
    ret.cap=100;
