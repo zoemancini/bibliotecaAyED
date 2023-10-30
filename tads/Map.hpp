@@ -33,7 +33,8 @@ V* mapGet(Map<K,V> m,K k)
 
    for(int i=0;i<arraySize<K>(m.keys);i++)
    {
-      if(k==*arrayGet<K>(m.keys,i))
+      K* key = arrayGet<K>(m.keys,i);
+      if(k==*key)
       {
          ret = arrayGet<V>(m.values,i);
          i=arraySize<K>(m.keys);
@@ -184,35 +185,43 @@ void mapSortByKeys(Map<K,V>& m,int cmpKK(K,K))
 template<typename K,typename V>
 void mapSortByValues(Map<K,V>& m,int cmpVV(V,V))
 {
-   Array<K> aux = arrayCreate<K>(); //array para copiar las keys y ordenarlas con criterio de values
+   Array<K> aux = arrayCreate<K>(); //array donde voy a ir copiando las keys ordenadas
 
-   mapReset<K,V>(m); //reseteo el map para poder iterar
-   K key = mapNextKey<K,V>(m); //tomo la primer key
-   arrayAdd<K>(aux,key); //agrego la primer key al array auxiliar
-   while(mapHasNext<K,V>(m))//ordeno las keys en un array auxiliar
+   mapReset<K,V>(m);
+   K key = mapNextKey<K,V>(m);
+   arrayAdd<K>(aux,key); //agrego la primera key al array aux
+
+   while(mapHasNext<K,V>(m))
    {
-      key = mapNextKey<K,V>(m);//tomo la siguiente key
-      V value = *mapGet<K,V>(m,key); //tomo el value correspondiente a la sig key
+      key = mapNextKey<K,V>(m);
+      V* value = mapGet<K,V>(m,key); //obtengo el value asociado a la key
 
+      /*comparo el value con cada uno de los values asociados a las keys que tengo en aux, cuando el cmp<0 dejo de iterar
+      y lo inserto. Si llego al final del array, lo inserto ahi*/
       int i = 0;
-      while(i<arraySize<K>(aux) && cmpVV(value, *mapGet<K,V>(m,*arrayGet<K>(aux,i))) <= 0)/*mientras el value de la
-       siguiente key sea menor, sigo iterando*/
+      K* sigKeyAux = arrayGet<K>(aux,i);
+      V* sigValueAux = mapGet<K,V>(m,*sigKeyAux);
+      while((i<arraySize<K>(aux)) && (cmpVV(*value,*sigValueAux)>=0))
       {
          i++;
+         sigKeyAux = arrayGet<K>(aux,i);
+         sigValueAux = mapGet<K,V>(m,*sigKeyAux);
       }
-      arrayInsert<K>(aux,i,key);
+      arrayInsert<K>(aux,key,i); //inserto la key en el array aux en su lugar correspondiente
    }
 
-   Array<V> valuesOrdenados = arrayCreate<V>();
-   for (int i=0;i<arraySize<K>(m.keys);i++)
+   //copio los values asociados a las keys en aux en otro array auxiliar
+   Array<V> valuesAux = arrayCreate<V>();
+   for(int i=0;i<arraySize<K>(aux);i++)
    {
-      K keyOrdered = *arrayGet<K>(aux,i);
-      V valueOrdered = *mapGet<K,V>(m,keyOrdered);
-      arraySet<V>(valuesOrdenados,i,valueOrdered);
-   }
+      K* keyAux = arrayGet<K>(aux,i);
+      V* valueAux = mapGet<K,V>(m,*keyAux);
 
-   m.keys=aux;
-   m.values=valuesOrdenados;
+      arrayAdd<V>(valuesAux,*valueAux);
+   }
+   //hago que los arrays del map apunten a los auxiliares ya ordenados
+   m.keys = aux;
+   m.values = valuesAux;
 }
 
 #endif

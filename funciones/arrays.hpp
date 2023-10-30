@@ -17,7 +17,7 @@ int add(T arr[],int& len,T e)
 template <typename T>
 void insert(T arr[],int& len,T e,int p)
 {
-    for(int i=len; i>p;len--)
+    for(int i=len; i>p;i--)
     {
         arr[i]=arr[i-1];
     }
