@@ -29,7 +29,7 @@ template<typename T>
 T* listAdd(List<T>& lst,T e)
 {
    lst.size++;
-   return add<T>(lst.p,e);
+   return &(add<T>(lst.p,e)->info);
 }
 
 /*Agrega el elemento e al inicio de la lista. Retorna la direccion de memoria del elemento que se agrego*/
@@ -133,8 +133,9 @@ bool listHasNext(List<T> lst)
 template<typename T>
 T* listNext(List<T>& lst)
 {
+   T* ret = &(lst.aux->info);
    lst.aux=lst.aux->sig;
-   return &(lst.aux->info);
+   return ret;
 }
 
 /*Retorna la direccion del siguiente elemento de la lista en la iteracion*/
