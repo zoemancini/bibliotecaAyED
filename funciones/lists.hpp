@@ -112,12 +112,12 @@ template <typename T>
 Node<T>* orderedInsert(Node<T>*& p,T e,int cmpTT(T,T))
 {
    Node<T>* nuevo = new Node<T>(); //creo el nodo para poder insertarlo en la lista
-   nuevo->info = v;
+   nuevo->info = e;
 
    Node<T>* ant = NULL; //nodo que apunta al anterior de aux
    Node<T>* aux = p; //nodo para recorrer la lista
 
-   while(aux!=NULL && cmpTT(aux->info,v)<0) //seguimos iterando mientras encontremos elementos menores que v
+   while(aux!=NULL && cmpTT(aux->info,e)<0) //seguimos iterando mientras encontremos elementos menores que v
    {
       ant = aux;
       aux = aux->sig;
